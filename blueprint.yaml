@@ -1,0 +1,29 @@
+tosca_definitions_version: cloudify_dsl_1_4
+
+description: ''
+
+imports:
+  - cloudify/types/types.yaml
+  - plugin:cloudify-azure-plugin?version= >=3.3.0
+  - plugin:cloudify-terraform-plugin
+  - plugin:cloudify-utilities-plugin?version= >=1.22.1
+
+inputs:
+
+node_templates:
+  terraform:
+    type: cloudify.nodes.terraform
+    properties:
+      resource_config:
+        installation_source: https://releases.hashicorp.com/terraform/1.3.0/terraform_1.2.0_linux_amd64.zip
+
+  cloud_resources:
+    type: cloudify.nodes.terraform.Module
+    properties:
+      resource_config:
+        source:
+          location: 'https://github.com/kaleabgirma/cloudify-terraform-module/archive/refs/heads/main.zip'
+        source_path: ''
+    relationships:
+      - target: terraform
+        type: cloudify.terraform.relationships.run_on_host
